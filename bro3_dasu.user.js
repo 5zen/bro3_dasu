@@ -14,8 +14,6 @@
 // @icon           https://github.com/5zen/bro3_dasu/raw/master/icon.png
 // @description    ブラウザ三国志 カード表示拡張と自動ブショーダス
 // @require	   http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js
-// @updateURL      https://github.com/5zen/bro3_dasu/raw/master/bro3_dasu.user.js
-// @require        http://sizzlemctwizzle.com/updater.php?id=132183
 //
 // @resource bg_status_trans1		https://lh5.googleusercontent.com/-DZRzFshn-D4/T7mXnX2-W4I/AAAAAAAAAVs/5ZFPkKsy9HI/s315/bg_status_trans1.png
 // @resource bg_status_trans2		https://lh5.googleusercontent.com/-_rLGEzz1M9M/T7mXnj1FcsI/AAAAAAAAAVw/FBmowx5Ea3g/s315/bg_status_trans2.png
@@ -58,9 +56,8 @@
 // @resource Summer_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_summer.gif
 // @resource Autumn_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_autumn.gif
 // @resource Winter_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_winter.gif
-
-
 // ==/UserScript==
+
 
 // 2012.05.14		適当にリリース
 // 2012.05.15		兵舎修練が2個あったので1個を兵舎訓練に修正
