@@ -14,7 +14,7 @@
 // @icon           http://5zen.info/mikanbox/icon.png
 // @description    ブラウザ三国志 カード表示拡張と自動ブショーダス
 // @require	   http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js
-// @updateURL      http://userscripts.org/scripts/source/132183.meta.js
+// @updateURL      https://github.com/5zen/bro3_dasu/raw/master/bro3_dasu.user.js
 // @require        http://sizzlemctwizzle.com/updater.php?id=132183
 //
 // @resource bg_status_trans1	 https://lh5.googleusercontent.com/-DZRzFshn-D4/T7mXnX2-W4I/AAAAAAAAAVs/5ZFPkKsy9HI/s315/bg_status_trans1.png
@@ -98,6 +98,7 @@
 //			SP他追加武将 №4087・4088・4089・4090を追加 thx.hasekun
 //			９月追加武将 №3104・4091・3105・2116・4092・1109・4093を追加 thx.hasekun
 // 2012.10.10		10月追加武将 №1110・1111・1112・2117・2118・3107・3108を追加 thx.hasekun & LAST
+// 2012.10.22		魏SP2　　　  №2119・2120・2121・2122・2123を追加 thx.LAST & ケンコウコツ
 
 jQuery.noConflict();
 j$ = jQuery;
@@ -390,13 +391,18 @@ var COLOR_BACK	= "#FFF2BB";	// 各BOX背景色
     "2109" : {	name : "徐晃"		, Rate : "SR",	Cost : 3.5	, Army : "騎",	Atk : 420, Int : 15 ,	Def1 : 440,	Def2 : 200,	Def3 : 665,	Def4 : 390, Speed : 13,	Skill0 : "騎兵の猛攻"		, Skill1 : "騎兵の強攻"		, Skill2 : "騎兵堅守"		, Skill3 : "製鉄技術"			, Skill4 : "騎兵の猛撃"		},
     "2110" : {	name : "龐徳"		, Rate : "SR",	Cost : 3.5	, Army : "騎",	Atk : 435, Int : 13 ,	Def1 : 450,	Def2 : 200,	Def3 : 680,	Def4 : 400, Speed : 14,	Skill0 : "猛将突貫"		, Skill1 : "万夫不当"		, Skill2 : "守護神"		, Skill3 : "騎兵突覇"			, Skill4 : "軍神"		},
     "2111" : {	name : "楽進"		, Rate : "R",	Cost : 3.0	, Army : "槍",	Atk : 325, Int : 9  ,	Def1 : 370,	Def2 : 320,	Def3 : 165,	Def4 : 560, Speed : 10,	Skill0 : "槍兵の猛撃"		, Skill1 : "槍兵の強撃"		, Skill2 : "槍兵堅守"		, Skill3 : "石切技術"			, Skill4 : "槍兵の極撃"		},
-    "2112" : {	name : "辛憲英"		, Rate : "SR",	Cost : 1.0	, Army : "歩",	Atk : 10 , Int : 10  ,	Def1 : 110,	Def2 : 90,	Def3 : 90,	Def4 :  90, Speed :  8,	Skill0 : "才媛献策"		, Skill1 : "深慮遠謀"		, Skill2 : "神速援護"		, Skill3 : "富国"			, Skill4 : "傾国"		},
+    "2112" : {	name : "辛憲英"		, Rate : "SR",	Cost : 1.0	, Army : "歩",	Atk : 10 , Int : 10 ,	Def1 : 110,	Def2 : 90,	Def3 : 90,	Def4 :  90, Speed :  8,	Skill0 : "才媛献策"		, Skill1 : "深慮遠謀"		, Skill2 : "神速援護"		, Skill3 : "富国"			, Skill4 : "傾国"		},
     "2113" : {	name : "夏侯淵"		, Rate : "R",	Cost : 3.0	, Army : "弓",	Atk : 295, Int : 9  ,	Def1 : 330,	Def2 : 500,	Def3 : 285,	Def4 : 150, Speed : 12,	Skill0 : "急襲"			, Skill1 : "一騎当千"		, Skill2 : "守護神"		, Skill3 : "千里行"			, Skill4 : "強襲突撃"		},
     "2114" : {	name : "曹操"		, Rate : "UR",	Cost : 3.5	, Army : "騎",	Atk : 430, Int : 22 ,	Def1 : 515,	Def2 : 235,	Def3 : 690,	Def4 : 405, Speed : 15,	Skill0 : "騎兵の極攻"		, Skill1 : "騎兵の猛撃"		, Skill2 : "騎兵の聖域"		, Skill3 : "厩舎修練"			, Skill4 : "騎兵の猛攻"		},
     "2115" : {	name : "夏侯惇"		, Rate : "SR",	Cost : 3.5	, Army : "弓",	Atk : 425, Int : 11 ,	Def1 : 430,	Def2 : 195,	Def3 : 655,	Def4 : 400, Speed : 13,	Skill0 : "隻眼将の軍略"		, Skill1 : "騎兵の猛撃"		, Skill2 : "神速"		, Skill3 : "加工技術"			, Skill4 : "飛将"		},
     "2116" : {	name : "許褚"		, Rate : "R",	Cost : 3.0	, Army : "槍",	Atk : 250, Int : 10 ,	Def1 : 435,	Def2 : 380,	Def3 : 135,	Def4 : 740, Speed : 10,	Skill0 : "守将の出陣"		, Skill1 : "槍兵方陣"		, Skill2 : "守護神"		, Skill3 : "八卦の陣"			, Skill4 : "槍兵の聖域"		},
     "2117" : {	name : "曹彰"		, Rate : "R" ,	Cost : 3.0	, Army : "弓",	Atk : 340, Int : 7  ,	Def1 : 345,	Def2 : 585,	Def3 : 300,	Def4 : 105, Speed : 9 ,	Skill0 : "弓兵の強攻"		, Skill1 : "弓兵の強撃"		, Skill2 : "弓兵防御"		, Skill3 : "弓兵行軍"			, Skill4 : "弓兵の強攻"		},
     "2118" : {	name : "司馬懿"		, Rate : "UC",	Cost : 2.5	, Army : "馬",	Atk : 200, Int : 16 ,	Def1 : 240,	Def2 : 130,	Def3 : 335,	Def4 : 183, Speed : 13,	Skill0 : "覇道"			, Skill1 : "豪傑"		, Skill2 : "鉄壁"		, Skill3 : "千里行"			, Skill4 : "兵器の極撃"		},
+    "2119" : {	name : "典韋・許褚"	, Rate : "UR",	Cost : 4.0	, Army : "槍",	Atk : 500, Int : 9  ,	Def1 : 640,	Def2 : 580,	Def3 : 420,	Def4 : 890, Speed : 11, Skill0 : "守神の進撃"		, Skill1 : "守将の進軍"		, Skill2 : "守護神"		, Skill3 : "槍将の采配"			, Skill4 : "槍兵の大極撃"	},
+    "2120" : {	name : "賈詡"		, Rate : "SR",	Cost : 1.5	, Army : "歩",	Atk : 150, Int : 17 ,	Def1 : 220,	Def2 : 130,	Def3 : 130,	Def4 : 130, Speed : 8 , Skill0 : "騎兵の大号令"		, Skill1 : "神算鬼謀"		, Skill2 : "王佐の才"		, Skill3 : "騎兵の勝鬨"			, Skill4 : "奇略布陣"		},
+    "2121" : {	name : "張春華"		, Rate : "R" ,	Cost : 1.0	, Army : "歩",	Atk : 15 , Int : 9  ,	Def1 : 130,	Def2 : 100,	Def3 : 100,	Def4 : 100, Speed : 8 , Skill0 : "才女の瞳"		, Skill1 : "騎兵突破"		, Skill2 : "鉄壁"		, Skill3 : "覇道"			, Skill4 : "闘将の極意"		},
+    "2122" : {	name : "辛憲英"		, Rate : "R" ,	Cost : 1.0	, Army : "歩",	Atk : 10 , Int : 10 ,	Def1 : 100,	Def2 : 80 ,	Def3 : 80 ,	Def4 : 80 , Speed : 8 , Skill0 : "聡明叡智"		, Skill1 : "奇計百出"		, Skill2 : "八卦の陣"		, Skill3 : "神速"			, Skill4 : "飛将"		},
+    "2123" : {	name : "張遼"		, Rate : "UC",	Cost : 3.0	, Army : "馬",	Atk : 350, Int : 8  ,	Def1 : 335,	Def2 : 145,	Def3 : 515,	Def4 : 300, Speed : 13, Skill0 : "騎兵の進攻"		, Skill1 : "騎兵の進攻"		, Skill2 : "騎兵防御"		, Skill3 : "騎兵強行"			, Skill4 : "騎兵の強撃"		},
 
     "3001" : {	name : "孫権"		, Rate : "R",	Cost : 2.5	, Army : "弓",	Atk : 180, Int : 14 ,	Def1 : 295,	Def2 : 370,	Def3 : 225,	Def4 : 135, Speed : 10,	Skill0 : "呉の治世"		, Skill1 : "奇計百出"		, Skill2 : "厩舎修練"		, Skill3 : "製鉄技術"			, Skill4 : "王佐の才"		},
     "3002" : {	name : "周瑜"		, Rate : "SR",	Cost : 3.5	, Army : "弓",	Atk : 340, Int : 23 ,	Def1 : 570,	Def2 : 790,	Def3 : 440,	Def4 : 310, Speed : 10,	Skill0 : "弓将の采配"		, Skill1 : "弓兵突覇"		, Skill2 : "王佐の才"		, Skill3 : "奇計百出"			, Skill4 : "飛将"		},
