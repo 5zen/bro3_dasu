@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           bro3_dasu
 // @namespace      ブラウザ三国志 カード表示拡張と自動ブショーダス
-// @version        2012.10.10
+// @version        2012.10.22
 // @include        http://*.3gokushi.jp/*
 // @include        https://*.3gokushi.jp/*
 // @include        http://*.nexon.com/*
@@ -11,17 +11,17 @@
 // @include        http://*.3gokushi.jp/busyodas/busyodas.php*
 // @include        http://*.3gokushi.jp/busyodas/b3kuji.php*
 // @include        http://*.3gokushi.jp/alliance/alliance_log.php*
-// @icon           http://5zen.info/mikanbox/icon.png
+// @icon           https://github.com/5zen/bro3_dasu/raw/master/icon.png
 // @description    ブラウザ三国志 カード表示拡張と自動ブショーダス
 // @require	   http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js
 // @updateURL      https://github.com/5zen/bro3_dasu/raw/master/bro3_dasu.user.js
 // @require        http://sizzlemctwizzle.com/updater.php?id=132183
 //
-// @resource bg_status_trans1	 https://lh5.googleusercontent.com/-DZRzFshn-D4/T7mXnX2-W4I/AAAAAAAAAVs/5ZFPkKsy9HI/s315/bg_status_trans1.png
-// @resource bg_status_trans2	https://lh5.googleusercontent.com/-_rLGEzz1M9M/T7mXnj1FcsI/AAAAAAAAAVw/FBmowx5Ea3g/s315/bg_status_trans2.png
-// @resource bg_status_trans3	https://lh4.googleusercontent.com/-sA1SSmBLEIU/T7mXn-aPwZI/AAAAAAAAAWA/bWSdsFVKvrY/s315/bg_status_trans3.png
-// @resource bg_status_trans4	https://lh3.googleusercontent.com/-6AHHx_xH0Vw/T7mX4yt2ekI/AAAAAAAAAYY/I7u9Tcai9Ac/s315/bg_status_trans4.png
-// @resource bg_status_trans5	https://lh6.googleusercontent.com/-uizMHeODcgo/T7mXovRivII/AAAAAAAAAWM/UgwyNwfxYwc/s315/bg_status_trans_hpnone.png
+// @resource bg_status_trans1		https://lh5.googleusercontent.com/-DZRzFshn-D4/T7mXnX2-W4I/AAAAAAAAAVs/5ZFPkKsy9HI/s315/bg_status_trans1.png
+// @resource bg_status_trans2		https://lh5.googleusercontent.com/-_rLGEzz1M9M/T7mXnj1FcsI/AAAAAAAAAVw/FBmowx5Ea3g/s315/bg_status_trans2.png
+// @resource bg_status_trans3		https://lh4.googleusercontent.com/-sA1SSmBLEIU/T7mXn-aPwZI/AAAAAAAAAWA/bWSdsFVKvrY/s315/bg_status_trans3.png
+// @resource bg_status_trans4		https://lh3.googleusercontent.com/-6AHHx_xH0Vw/T7mX4yt2ekI/AAAAAAAAAYY/I7u9Tcai9Ac/s315/bg_status_trans4.png
+// @resource bg_status_trans5		https://lh6.googleusercontent.com/-uizMHeODcgo/T7mXovRivII/AAAAAAAAAWM/UgwyNwfxYwc/s315/bg_status_trans_hpnone.png
 //
 // @resource bg_status_ur_trans1	https://lh4.googleusercontent.com/-zy--sb6UAek/T7mXsp30DSI/AAAAAAAAAXE/30XfuBAUWow/s315/bg_status_ur_trans1.png
 // @resource bg_status_ur_trans2	https://lh4.googleusercontent.com/-YrfNgPU8btg/T7mXsw0znVI/AAAAAAAAAW8/WfkVni0ppXk/s315/bg_status_ur_trans2.png
@@ -29,35 +29,35 @@
 // @resource bg_status_ur_trans4	https://lh3.googleusercontent.com/-qyhIBZFUAoM/T7mXt-_6YaI/AAAAAAAAAXQ/EM9orpQkU_0/s315/bg_status_ur_trans4.png
 // @resource bg_status_ur_trans5	https://lh6.googleusercontent.com/-HQmomOZKanA/T7mXu0QpLdI/AAAAAAAAAXY/QGFJiu_qdNk/s315/bg_status_ur_trans_hpnone.png
 //
-// @resource bg_status_1	https://lh3.googleusercontent.com/-2DXBSb8-ZK4/T7mXlyWCryI/AAAAAAAAAVg/FtvR9v82qVA/s315/bg_status_r_new.png
-// @resource bg_status_2	https://lh5.googleusercontent.com/-NPvqDfStGR8/T7mXmKlzJcI/AAAAAAAAAVc/MWFBFpgUVSA/s315/bg_status_r_new2.png
-// @resource bg_status_3	https://lh5.googleusercontent.com/-pY7caIuEJAk/T7mXpCjbxPI/AAAAAAAAAWc/yEpTlH48U2Q/s315/bg_status_r_new3.png
-// @resource bg_status_4	https://lh6.googleusercontent.com/-KipIDilvq2U/T7mXml9CeII/AAAAAAAAAVk/30jYoxFwlrY/s315/bg_status_r_new4.png
-// @resource bg_status_5	https://lh6.googleusercontent.com/-Psf8t1MRf40/T7mXm-VhT5I/AAAAAAAAAVo/C2airGKlb6k/s315/bg_status_r_new_hpnone.png
+// @resource bg_status_1		https://github.com/5zen/bro3_dasu/raw/master/bg_status_r_new.png
+// @resource bg_status_2		https://github.com/5zen/bro3_dasu/raw/master/bg_status_r_new2.png
+// @resource bg_status_3		https://github.com/5zen/bro3_dasu/raw/master/bg_status_r_new3.png
+// @resource bg_status_4		https://github.com/5zen/bro3_dasu/raw/master/bg_status_r_new4.png
+// @resource bg_status_5		https://github.com/5zen/bro3_dasu/raw/master/bg_status_r_new_hpnone.png
 //
-// @resource bg_status_ur_1	https://lh5.googleusercontent.com/-pu1kQMxR7sA/T7mXrv_pmLI/AAAAAAAAAWo/Jf3qGWPMh_g/s315/bg_status_ur_new.png
-// @resource bg_status_ur_2	https://lh4.googleusercontent.com/-7R9zHRvFj-A/T7mXqpUsjtI/AAAAAAAAAWg/cGTlqO01AUE/s315/bg_status_ur_new2.png
-// @resource bg_status_ur_3	https://lh6.googleusercontent.com/-vobPvxXX09k/T7mXrS-HuRI/AAAAAAAAAWk/sgM7YrS9PjI/s315/bg_status_ur_new3.png
-// @resource bg_status_ur_4	https://lh3.googleusercontent.com/-HQFhMcVK36A/T7mXsA1B3YI/AAAAAAAAAWw/zItf07qMdQo/s315/bg_status_ur_new4.png
-// @resource bg_status_ur_5	https://lh4.googleusercontent.com/-g-TYbcHcw-k/T7mXsBOagyI/AAAAAAAAAW0/6Dt9IYwWcto/s315/bg_status_ur_new_hpnone.png
+// @resource bg_status_ur_1		https://github.com/5zen/bro3_dasu/raw/master/bg_status_ur_new.png
+// @resource bg_status_ur_2		https://github.com/5zen/bro3_dasu/raw/master/bg_status_ur_new2.png
+// @resource bg_status_ur_3		https://github.com/5zen/bro3_dasu/raw/master/bg_status_ur_new3.png
+// @resource bg_status_ur_4		https://github.com/5zen/bro3_dasu/raw/master/bg_status_ur_new4.png
+// @resource bg_status_ur_5		https://github.com/5zen/bro3_dasu/raw/master/bg_status_ur_new_hpnone.png
 //
-// @resource hose		https://lh3.googleusercontent.com/-1z7uiUYD_Jo/T7mXvi3jACI/AAAAAAAAAXc/eu3O4RqBbe4/s21/hose.png
-// @resource archery		https://lh3.googleusercontent.com/-C_Q3OMWAg50/T7mXl1YuGcI/AAAAAAAAAVY/oeGCkV_DQ4I/s21/archery.png
-// @resource spear	 	https://lh3.googleusercontent.com/-bS0iFJs9wCo/T7mXwXFIjeI/AAAAAAAAAX8/wRlqkEklErU/s21/spear.png
-// @resource soldier		https://lh4.googleusercontent.com/-ocWMCizHb54/T7mXwQDlM-I/AAAAAAAAAXs/Hnag5yJtqUw/s21/soldier.png
-// @resource lv			https://lh6.googleusercontent.com/-5bkj2AIvppU/T7mXwCFUW5I/AAAAAAAAAXk/uSRFTtZVHC8/s12/lv.png
+// @resource hose			https://lh3.googleusercontent.com/-1z7uiUYD_Jo/T7mXvi3jACI/AAAAAAAAAXc/eu3O4RqBbe4/s21/hose.png
+// @resource archery			https://lh3.googleusercontent.com/-C_Q3OMWAg50/T7mXl1YuGcI/AAAAAAAAAVY/oeGCkV_DQ4I/s21/archery.png
+// @resource spear		 	https://lh3.googleusercontent.com/-bS0iFJs9wCo/T7mXwXFIjeI/AAAAAAAAAX8/wRlqkEklErU/s21/spear.png
+// @resource soldier			https://lh4.googleusercontent.com/-ocWMCizHb54/T7mXwQDlM-I/AAAAAAAAAXs/Hnag5yJtqUw/s21/soldier.png
+// @resource lv				https://lh6.googleusercontent.com/-5bkj2AIvppU/T7mXwCFUW5I/AAAAAAAAAXk/uSRFTtZVHC8/s12/lv.png
 
-// @resource old_village	http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg.jpg
-// @resource Spring_village	http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_spring.jpg
-// @resource Summer_village	http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_summer.jpg
-// @resource Autumn_village	http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_autumn.jpg
-// @resource Winter_village	http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_winter.jpg
+// @resource old_village		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg.jpg
+// @resource Spring_village		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_spring.jpg
+// @resource Summer_village		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_summer.jpg
+// @resource Autumn_village		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_autumn.jpg
+// @resource Winter_village		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_winter.jpg
 
-// @resource old_map		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg.gif
-// @resource Spring_map		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_spring.gif
-// @resource Summer_map		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_summer.gif
-// @resource Autumn_map		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_autumn.gif
-// @resource Winter_map		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_winter.gif
+// @resource old_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg.gif
+// @resource Spring_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_spring.gif
+// @resource Summer_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_summer.gif
+// @resource Autumn_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_autumn.gif
+// @resource Winter_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_winter.gif
 
 
 // ==/UserScript==
@@ -99,6 +99,7 @@
 //			９月追加武将 №3104・4091・3105・2116・4092・1109・4093を追加 thx.hasekun
 // 2012.10.10		10月追加武将 №1110・1111・1112・2117・2118・3107・3108を追加 thx.hasekun & LAST
 // 2012.10.22		魏SP2　　　  №2119・2120・2121・2122・2123を追加 thx.LAST & ケンコウコツ
+//			枠データの一部をgithubに移行
 
 jQuery.noConflict();
 j$ = jQuery;
