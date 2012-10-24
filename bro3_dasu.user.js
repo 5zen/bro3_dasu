@@ -1372,7 +1372,7 @@ function autoDasu(total_bp, zan_maisu, hakiid, oldcardno){
 	        j$("#CardInfo").html(ViewDrawResult);
 		if (hakiid != 0) {
 			var c = {};
-			c['card_id[' + haki + ']'] = "1";
+			c['card_id[' + hakiid + ']'] = "1";	// 2012.10.24 修正
 			c['p'] = "1";
 			c['s'] = "";
 			c['o'] = "";
