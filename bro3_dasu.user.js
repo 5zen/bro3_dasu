@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           bro3_dasu
 // @namespace      ブラウザ三国志 カード表示拡張と自動ブショーダス
-// @version        2012.10.22
+// @version        2012.10.24
 // @include        http://*.3gokushi.jp/*
 // @include        https://*.3gokushi.jp/*
 // @include        http://*.nexon.com/*
@@ -97,6 +97,7 @@
 // 2012.10.10		10月追加武将 №1110・1111・1112・2117・2118・3107・3108を追加 thx.hasekun & LAST
 // 2012.10.22		魏SP2　　　  №2119・2120・2121・2122・2123を追加 thx.LAST & ケンコウコツ
 //			枠データの一部をgithubに移行
+// 2012.10.22		破棄時のssidの値が誤っていたのを修正
 
 jQuery.noConflict();
 j$ = jQuery;
