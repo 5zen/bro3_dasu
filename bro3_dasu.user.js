@@ -1368,33 +1368,32 @@ function autoDasu(total_bp, zan_maisu, hakiid, oldcardno){
 		var ViewDrawResult = "";
 		// 表示データを作成
 		for (i=0;i<10;i++){	ViewDrawResult += DrawResult[i];	}
-        j$("#CardInfo").html(ViewDrawResult);
-
+	        j$("#CardInfo").html(ViewDrawResult);
 		if (hakiid != 0) {
-            var c = {};
-            c['card_id[' + haki + ']'] = "1";
-            c['p'] = "1";
-            c['s'] = "";
-            c['o'] = "";
-            c['sz'] = "";
-            c['ssid'] = r;
-            c['btn_send'] = "破棄";
-            j$.post("http://" + HOST + "/card/allcard_delete.php", c, function () {
-                location.href = "http://" + HOST + "/busyodas/busyodas.php";
-                return;
-            })
-        } else {
-            location.href = "http://" + HOST + "/busyodas/busyodas.php";
-            return;
-        }
-    }
+			var c = {};
+			c['card_id[' + haki + ']'] = "1";
+			c['p'] = "1";
+			c['s'] = "";
+			c['o'] = "";
+			c['sz'] = "";
+			c['ssid'] = ssid;			// 2012.10.24 修正
+			c['btn_send'] = "破棄";
+			j$.post("http://" + HOST + "/card/allcard_delete.php", c, function () {
+				location.href = "http://" + HOST + "/busyodas/busyodas.php";
+				return;
+			})
+		} else {
+			location.href = "http://" + HOST + "/busyodas/busyodas.php";
+			return;
+		}
+	}
 
 	// カードを１枚引く
 	var c={};
 	c['ssid'] = ssid;
 	c['send'] = 'send';
 	c['got_type'] = 0;
-    c['del_card_id'] = hakiid;
+	c['del_card_id'] = hakiid;
 
     j$(document.body).append("<div id=AjaxTempDOM>");
 //  j$("#AjaxTempDOM").hide();
@@ -1431,14 +1430,12 @@ function autoDasu(total_bp, zan_maisu, hakiid, oldcardno){
 			DrawResult[i] = DrawResult[i-1];
 		}
 
-        if (rate == "C") {			DrawResult[0] = "<span id=card_rarityC>"  + '<font style="color:#000000; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
+        if (rate == "C") {		DrawResult[0] = "<span id=card_rarityC>"  + '<font style="color:#000000; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
         } else if (rate == "UC") {	DrawResult[0] = "<span id=card_rarityUC>" + '<font style="color:#ffa200; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
         } else if (rate == "R")  {	DrawResult[0] = "<span id=card_rarityR>"  + '<font style="color:#00c5ff; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
         } else if (rate == "SR") {	DrawResult[0] = "<span id=card_raritySR>" + '<font style="color:#ff4242; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
-        } else {					DrawResult[0] = "<span id=card_rarity>"   + '<font style="color:#f236fe; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
+        } else {			DrawResult[0] = "<span id=card_rarity>"   + '<font style="color:#f236fe; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
         }
-
-		
 
 		var ViewDrawResult = "";
 		for (i=0;i<10;i++){
