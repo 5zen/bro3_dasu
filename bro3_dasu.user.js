@@ -1,19 +1,19 @@
 // ==UserScript==
-// @name           bro3_dasu
-// @namespace      ブラウザ三国志 カード表示拡張と自動ブショーダス
-// @version        2012.10.24
-// @include        http://*.3gokushi.jp/*
-// @include        https://*.3gokushi.jp/*
-// @include        http://*.nexon.com/*
-// @include        http://*.3gokushi.jp/card/exhibit_list.php*
-// @include        http://*.3gokushi.jp/card/bid_list.php*
-// @include        http://*.3gokushi.jp/card/busyobook_picture.php*
-// @include        http://*.3gokushi.jp/busyodas/busyodas.php*
-// @include        http://*.3gokushi.jp/busyodas/b3kuji.php*
-// @include        http://*.3gokushi.jp/alliance/alliance_log.php*
-// @icon           https://github.com/5zen/bro3_dasu/raw/master/icon.png
-// @description    ブラウザ三国志 カード表示拡張と自動ブショーダス
-// @require	   http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js
+// @name		bro3_dasu
+// @namespace	ブラウザ三国志 カード表示拡張と自動ブショーダス
+// @version		2012.11.01
+// @include		http://*.3gokushi.jp/*
+// @include		https://*.3gokushi.jp/*
+// @include		http://*.nexon.com/*
+// @include		http://*.3gokushi.jp/card/exhibit_list.php*
+// @include		http://*.3gokushi.jp/card/bid_list.php*
+// @include		http://*.3gokushi.jp/card/busyobook_picture.php*
+// @include		http://*.3gokushi.jp/busyodas/busyodas.php*
+// @include		http://*.3gokushi.jp/busyodas/b3kuji.php*
+// @include		http://*.3gokushi.jp/alliance/alliance_log.php*
+// @icon		https://raw.github.com/5zen/bro3_dasu/master/icon.png
+// @description		ブラウザ三国志 カード表示拡張と自動ブショーダス
+// @require		http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js
 //
 // @resource bg_status_trans1		https://lh5.googleusercontent.com/-DZRzFshn-D4/T7mXnX2-W4I/AAAAAAAAAVs/5ZFPkKsy9HI/s315/bg_status_trans1.png
 // @resource bg_status_trans2		https://lh5.googleusercontent.com/-_rLGEzz1M9M/T7mXnj1FcsI/AAAAAAAAAVw/FBmowx5Ea3g/s315/bg_status_trans2.png
@@ -21,23 +21,23 @@
 // @resource bg_status_trans4		https://lh3.googleusercontent.com/-6AHHx_xH0Vw/T7mX4yt2ekI/AAAAAAAAAYY/I7u9Tcai9Ac/s315/bg_status_trans4.png
 // @resource bg_status_trans5		https://lh6.googleusercontent.com/-uizMHeODcgo/T7mXovRivII/AAAAAAAAAWM/UgwyNwfxYwc/s315/bg_status_trans_hpnone.png
 //
-// @resource bg_status_ur_trans1	https://lh4.googleusercontent.com/-zy--sb6UAek/T7mXsp30DSI/AAAAAAAAAXE/30XfuBAUWow/s315/bg_status_ur_trans1.png
-// @resource bg_status_ur_trans2	https://lh4.googleusercontent.com/-YrfNgPU8btg/T7mXsw0znVI/AAAAAAAAAW8/WfkVni0ppXk/s315/bg_status_ur_trans2.png
-// @resource bg_status_ur_trans3	https://lh6.googleusercontent.com/-YBSgWmnCNJs/T7mXvu1eQcI/AAAAAAAAAXg/5ns-Gqifzu0/s315/bg_status_ur_trans3.png
-// @resource bg_status_ur_trans4	https://lh3.googleusercontent.com/-qyhIBZFUAoM/T7mXt-_6YaI/AAAAAAAAAXQ/EM9orpQkU_0/s315/bg_status_ur_trans4.png
-// @resource bg_status_ur_trans5	https://lh6.googleusercontent.com/-HQmomOZKanA/T7mXu0QpLdI/AAAAAAAAAXY/QGFJiu_qdNk/s315/bg_status_ur_trans_hpnone.png
+// @resource bg_status_ur_trans1		https://lh4.googleusercontent.com/-zy--sb6UAek/T7mXsp30DSI/AAAAAAAAAXE/30XfuBAUWow/s315/bg_status_ur_trans1.png
+// @resource bg_status_ur_trans2		https://lh4.googleusercontent.com/-YrfNgPU8btg/T7mXsw0znVI/AAAAAAAAAW8/WfkVni0ppXk/s315/bg_status_ur_trans2.png
+// @resource bg_status_ur_trans3		https://lh6.googleusercontent.com/-YBSgWmnCNJs/T7mXvu1eQcI/AAAAAAAAAXg/5ns-Gqifzu0/s315/bg_status_ur_trans3.png
+// @resource bg_status_ur_trans4		https://lh3.googleusercontent.com/-qyhIBZFUAoM/T7mXt-_6YaI/AAAAAAAAAXQ/EM9orpQkU_0/s315/bg_status_ur_trans4.png
+// @resource bg_status_ur_trans5		https://lh6.googleusercontent.com/-HQmomOZKanA/T7mXu0QpLdI/AAAAAAAAAXY/QGFJiu_qdNk/s315/bg_status_ur_trans_hpnone.png
 //
-// @resource bg_status_1		https://github.com/5zen/bro3_dasu/raw/master/bg_status_r_new.png
-// @resource bg_status_2		https://github.com/5zen/bro3_dasu/raw/master/bg_status_r_new2.png
-// @resource bg_status_3		https://github.com/5zen/bro3_dasu/raw/master/bg_status_r_new3.png
-// @resource bg_status_4		https://github.com/5zen/bro3_dasu/raw/master/bg_status_r_new4.png
-// @resource bg_status_5		https://github.com/5zen/bro3_dasu/raw/master/bg_status_r_new_hpnone.png
+// @resource bg_status_1		https://raw.github.com/5zen/bro3_dasu/master/bg_status_r_new.png
+// @resource bg_status_2		https://raw.github.com/5zen/bro3_dasu/master/bg_status_r_new2.png
+// @resource bg_status_3		https://raw.github.com/5zen/bro3_dasu/master/bg_status_r_new3.png
+// @resource bg_status_4		https://raw.github.com/5zen/bro3_dasu/master/bg_status_r_new4.png
+// @resource bg_status_5		https://raw.github.com/5zen/bro3_dasu/master/bg_status_r_new_hpnone.png
 //
-// @resource bg_status_ur_1		https://github.com/5zen/bro3_dasu/raw/master/bg_status_ur_new.png
-// @resource bg_status_ur_2		https://github.com/5zen/bro3_dasu/raw/master/bg_status_ur_new2.png
-// @resource bg_status_ur_3		https://github.com/5zen/bro3_dasu/raw/master/bg_status_ur_new3.png
-// @resource bg_status_ur_4		https://github.com/5zen/bro3_dasu/raw/master/bg_status_ur_new4.png
-// @resource bg_status_ur_5		https://github.com/5zen/bro3_dasu/raw/master/bg_status_ur_new_hpnone.png
+// @resource bg_status_ur_1		https://raw.github.com/5zen/bro3_dasu/master/bg_status_ur_new.png
+// @resource bg_status_ur_2		https://raw.github.com/5zen/bro3_dasu/master/bg_status_ur_new2.png
+// @resource bg_status_ur_3		https://raw.github.com/5zen/bro3_dasu/master/bg_status_ur_new3.png
+// @resource bg_status_ur_4		https://raw.github.com/5zen/bro3_dasu/master/bg_status_ur_new4.png
+// @resource bg_status_ur_5		https://raw.github.com/5zen/bro3_dasu/master/bg_status_ur_new_hpnone.png
 //
 // @resource hose			https://lh3.googleusercontent.com/-1z7uiUYD_Jo/T7mXvi3jACI/AAAAAAAAAXc/eu3O4RqBbe4/s21/hose.png
 // @resource archery			https://lh3.googleusercontent.com/-C_Q3OMWAg50/T7mXl1YuGcI/AAAAAAAAAVY/oeGCkV_DQ4I/s21/archery.png
@@ -45,17 +45,17 @@
 // @resource soldier			https://lh4.googleusercontent.com/-ocWMCizHb54/T7mXwQDlM-I/AAAAAAAAAXs/Hnag5yJtqUw/s21/soldier.png
 // @resource lv				https://lh6.googleusercontent.com/-5bkj2AIvppU/T7mXwCFUW5I/AAAAAAAAAXk/uSRFTtZVHC8/s12/lv.png
 
-// @resource old_village		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg.jpg
+// @resource old_village			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg.jpg
 // @resource Spring_village		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_spring.jpg
 // @resource Summer_village		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_summer.jpg
 // @resource Autumn_village		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_autumn.jpg
 // @resource Winter_village		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/village_bg_winter.jpg
 
 // @resource old_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg.gif
-// @resource Spring_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_spring.gif
-// @resource Summer_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_summer.gif
-// @resource Autumn_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_autumn.gif
-// @resource Winter_map			http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_winter.gif
+// @resource Spring_map		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_spring.gif
+// @resource Summer_map		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_summer.gif
+// @resource Autumn_map		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_autumn.gif
+// @resource Winter_map		http://m17.3gokushi.jp/20120525-01/extend_project/w760/img/common/map_bg_winter.gif
 // ==/UserScript==
 
 
@@ -98,16 +98,17 @@
 // 2012.10.22		魏SP2　　　  №2119・2120・2121・2122・2123を追加 thx.LAST & ケンコウコツ
 //			枠データの一部をgithubに移行
 // 2012.10.22		破棄時のssidの値が誤っていたのを修正
+// 2012.11.01		Scriptishでの302エラー対応
 
 jQuery.noConflict();
 j$ = jQuery;
 
 var PGNAME = "_Auto_Busho_Das_5zen_v2012.05.27";	//グリモン領域への保存時のPGの名前
-var VERSION = "2012.09.11";				// バージョン情報
+var VERSION = "2012.11.01";				// バージョン情報
 var HOST = location.hostname;				//アクセスURLホスト
 var OPT_SEASON = "DF";					// 標準は変更しない
 
-var SukesukeFlg;					//自動ダス設定画面での設定
+var SukesukeFlg;						//自動ダス設定画面での設定
 
 // 画像リソース配列
 var bg_status		= [];
