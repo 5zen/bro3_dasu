@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name		bro3_dasu
-// @namespace	ブラウザ三国志 カード表示拡張と自動ブショーダス
-// @version		2012.11.01
+// @namespace		ブラウザ三国志 カード表示拡張と自動ブショーダス
+// @version		2013.01.17
 // @include		http://*.3gokushi.jp/*
 // @include		https://*.3gokushi.jp/*
 // @include		http://*.nexon.com/*
@@ -9,6 +9,7 @@
 // @include		http://*.3gokushi.jp/card/bid_list.php*
 // @include		http://*.3gokushi.jp/card/busyobook_picture.php*
 // @include		http://*.3gokushi.jp/busyodas/busyodas.php*
+// @include             http://*.3gokushi.jp/busyodas/busyodas_continuty_result.php
 // @include		http://*.3gokushi.jp/busyodas/b3kuji.php*
 // @include		http://*.3gokushi.jp/alliance/alliance_log.php*
 // @icon		https://raw.github.com/5zen/bro3_dasu/master/icon.png
@@ -101,12 +102,17 @@
 // 2012.11.01		Scriptishでの302エラー対応
 // 2012.11.22		№2082 修正
 // 			№1113,1114,2124,2125,2126,3109,3110,4094 追加
+// 2013.01.17		手動でブショーダス時の破棄チェック自動機能追加
+//			ブショーダス時の合成レシピの表示修正
+//			自動ダス時の表示の修正
+//			№1115,1116,3111,3112,3113,4103,4104 追加
+//			№3111 は情報不足デス
 
 jQuery.noConflict();
 j$ = jQuery;
 
 var PGNAME = "_Auto_Busho_Das_5zen_v2012.05.27";	//グリモン領域への保存時のPGの名前
-var VERSION = "2012.11.22";				// バージョン情報
+var VERSION = "2013.01.17";				// バージョン情報
 var HOST = location.hostname;				//アクセスURLホスト
 var OPT_SEASON = "DF";					// 標準は変更しない
 
@@ -286,9 +292,11 @@ var COLOR_BACK	= "#FFF2BB";	// 各BOX背景色
 	"1110" : {	name : "劉備"		, Rate : "UR",	Cost : 3.5	, Army : "槍",	Atk : 435, Int : 20 ,	Def1 : 505,	Def2 : 400,	Def3 : 235,	Def4 : 645, Speed : 13, Skill0 : "槍兵の極攻"		, Skill1 : "槍兵の猛撃"		, Skill2 : "兵舎修練"		, Skill3 : "槍兵の聖域"			, Skill4 : "槍兵の猛攻"		},
 	"1111" : {	name : "周倉"		, Rate : "SR",	Cost : 3.0	, Army : "槍",	Atk : 345, Int : 4  ,	Def1 : 335,	Def2 : 300,	Def3 : 100,	Def4 : 565, Speed : 13, Skill0 : "迅速劫略"		, Skill1 : "槍兵突覇"		, Skill2 : "神速援護"		, Skill3 : "千里行"			, Skill4 : "猛将の鹵獲"		},
 	"1112" : {	name : "関興"		, Rate : "R" ,	Cost : 3.0	, Army : "槍",	Atk : 330, Int : 8  ,	Def1 : 355,	Def2 : 320,	Def3 : 110,	Def4 : 605, Speed : 10, Skill0 : "発憤興起"		, Skill1 : "強襲速撃"		, Skill2 : "槍兵方陣"		, Skill3 : "鉄壁"			, Skill4 : "槍兵増強"		},
-
 	"1113" : {	name : "鮑三娘"		, Rate : "SR",	Cost : 2.0	, Army : "騎",	Atk : 275, Int : 5 ,	Def1 : 130,	Def2 : 45 ,	Def3 : 255,	Def4 : 130, Speed : 13,	Skill0 : "戦女の行軍"		, Skill1 : "強襲突覇"		,Skill2 : "恵風"		, Skill3 : "神速"			, Skill4 : "急襲"		},
 	"1114" : {	name : "関索"		, Rate : "R" ,	Cost : 1.5	, Army : "槍",	Atk : 230, Int : 7 ,	Def1 : 210,	Def2 : 180,	Def3 : 65 ,	Def4 : 350, Speed : 10,	Skill0 : "一騎当千"		, Skill1 : "槍兵突覇"		,Skill2 : "鉄壁"	 	, Skill3 : "加工知識"			, Skill4 : "魏王の号令"		},
+
+	"1115" : {	name : "黄月英"		, Rate : "UR" ,	Cost : 1.0	, Army : "槍",	Atk : 20, Int : 12 ,	Def1 : 120,	Def2 : 95 ,	Def3 : 95 ,	Def4 : 95 , Speed : 9 ,	Skill0 : "賢女の策略"		, Skill1 : "兵器の極撃"		,Skill2 : "王者の護り"	 	, Skill3 : "槍将の采配"			, Skill4 : "智将器撃"		},
+	"1116" : {	name : "馬岱"		, Rate : "R" ,	Cost : 2.5	, Army : "騎",	Atk : 290, Int : 7 ,	Def1 : 265,	Def2 : 120,	Def3 : 405,	Def4 : 230, Speed : 14,	Skill0 : "騎兵の強攻"		, Skill1 : "騎兵の強撃"		, Skill2 : "騎兵防御"		, Skill3 : "騎兵行軍"			, Skill4 : "騎兵の強攻"		},
 
 	"2001" : {	name : "曹操"		, Rate : "SR",	Cost : 3.5	, Army : "騎",	Atk : 415, Int : 22 ,	Def1 : 520,	Def2 : 240,	Def3 : 700,	Def4 : 410, Speed : 13,	Skill0 : "魏王の号令"		, Skill1 : "騎兵突覇"		, Skill2 : "騎兵の聖域"		, Skill3 : "厩舎修練"			, Skill4 : "富国"		},
 	"2002" : {	name : "司馬懿"		, Rate : "SR",	Cost : 3.5	, Army : "騎",	Atk : 385, Int : 24 ,	Def1 : 535,	Def2 : 290,	Def3 : 740,	Def4 : 420, Speed : 13,	Skill0 : "深慮遠謀"		, Skill1 : "兵舎修練"		, Skill2 : "王佐の才"		, Skill3 : "農林知識"			, Skill4 : "攻城の檄文"		},
@@ -367,7 +375,6 @@ var COLOR_BACK	= "#FFF2BB";	// 各BOX背景色
 	"2079" : {	name : "鐘会"		, Rate : "SR",	Cost : 3.0	, Army : "槍",	Atk : 320, Int : 15 ,	Def1 : 380,	Def2 : 360,	Def3 : 170,	Def4 : 580, Speed : 10,	Skill0 : "槍兵の極撃"		, Skill1 : "槍兵突撃"		, Skill2 : "槍兵方陣"		, Skill3 : "兵舎修練"			, Skill4 : "槍兵突覇"		},
 	"2080" : {	name : "曹洪"		, Rate : "R",	Cost : 2.0	, Army : "騎",	Atk : 245, Int : 5  ,	Def1 : 260,	Def2 : 115,	Def3 : 395,	Def4 : 255, Speed : 13,	Skill0 : "騎兵突覇"		, Skill1 : "騎兵突撃"		, Skill2 : "厩舎修練"		, Skill3 : "神速"			, Skill4 : "一騎当千"		},
 	"2081" : {	name : "曹休"		, Rate : "R",	Cost : 2.0	, Army : "騎",	Atk : 240, Int : 10 ,	Def1 : 320,	Def2 : 180,	Def3 : 440,	Def4 : 260, Speed : 13,	Skill0 : "騎兵の聖域"		, Skill1 : "騎兵方陣"		, Skill2 : "厩舎修練"		, Skill3 : "騎兵強行"			, Skill4 : "八卦の陣"		},
-
 	"2082" : {	name : "卞夫人"		, Rate : "SR",	Cost : 1.0	, Army : "歩",	Atk : 10 , Int : 9  ,	Def1 : 95 ,	Def2 : 80 ,	Def3 : 80 ,	Def4 : 80 , Speed : 8 ,	Skill0 : "美玉歌舞"		, Skill1 : "奇計百出"		, Skill2 : "厩舎修練"		, Skill3 : "仁君"	 		, Skill4 : "王佐の才"		},
 
 	"2083" : {	name : "甄姫"		, Rate : "UR",	Cost : 1.0	, Army : "歩",	Atk : 35 , Int : 10 ,	Def1 : 155,	Def2 : 130,	Def3 : 130,	Def4 : 130, Speed : 9 ,	Skill0 : "皇后の慈愛"		, Skill1 : "覇王の進撃"		, Skill2 : "傾国"		, Skill3 : "富国"			, Skill4 : "神医の術式"		},
@@ -410,7 +417,6 @@ var COLOR_BACK	= "#FFF2BB";	// 各BOX背景色
 	"2121" : {	name : "張春華"		, Rate : "R" ,	Cost : 1.0	, Army : "歩",	Atk : 15 , Int : 9  ,	Def1 : 130,	Def2 : 100,	Def3 : 100,	Def4 : 100, Speed : 8 , Skill0 : "才女の瞳"		, Skill1 : "騎兵突破"		, Skill2 : "鉄壁"		, Skill3 : "覇道"			, Skill4 : "闘将の極意"		},
 	"2122" : {	name : "辛憲英"		, Rate : "R" ,	Cost : 1.0	, Army : "歩",	Atk : 10 , Int : 10 ,	Def1 : 100,	Def2 : 80 ,	Def3 : 80 ,	Def4 : 80 , Speed : 8 , Skill0 : "聡明叡智"		, Skill1 : "奇計百出"		, Skill2 : "八卦の陣"		, Skill3 : "神速"			, Skill4 : "飛将"		},
 	"2123" : {	name : "張遼"		, Rate : "UC",	Cost : 3.0	, Army : "馬",	Atk : 350, Int : 8  ,	Def1 : 335,	Def2 : 145,	Def3 : 515,	Def4 : 300, Speed : 13, Skill0 : "騎兵の進攻"		, Skill1 : "騎兵の進攻"		, Skill2 : "騎兵防御"		, Skill3 : "騎兵強行"			, Skill4 : "騎兵の強撃"		},
-
 	"2124" : {	name : "郭嘉"		, Rate : "UR",	Cost : 3.0	, Army : "歩",	Atk : 300, Int : 22,	Def1 : 230,	Def2 : 250,	Def3 : 250,	Def4 : 250, Speed : 9 , Skill0 : "才略謀略"		, Skill1 : "槍兵の勝鬨"		, Skill2 : "弓兵の勝鬨"		, Skill3 : "騎兵の勝鬨"			, Skill4 : "智将器撃"		},
 	"2125" : {	name : "鄧艾"		, Rate : "R",	Cost : 3.0	, Army : "槍",	Atk : 290, Int : 17,	Def1 : 395,	Def2 : 345,	Def3 : 180,	Def4 : 605, Speed : 10, Skill0 : "擒賊擒王"		, Skill1 : "槍兵突撃"		, Skill2 : "八卦の陣"		, Skill3 : "城壁補強"			, Skill4 : "王者の護り"		},
 	"2126" : {	name : "郭夫人"		, Rate : "UR",	Cost : 1.5	, Army : "歩",	Atk : 30 , Int : 10,	Def1 : 180,	Def2 : 90 ,	Def3 : 90 ,	Def4 : 90 , Speed : 9 , Skill0 : "帝妃都政"		, Skill1 : "奇計百出 "		, Skill2 : "厩舎修練"		, Skill3 : "製鉄技術"			, Skill4 : "※不明※" 		},
@@ -517,14 +523,17 @@ var COLOR_BACK	= "#FFF2BB";	// 各BOX背景色
 	"3101" : {	name : "凌統"		, Rate : "SR",	Cost : 3.5	, Army : "槍",	Atk : 400, Int : 11 ,	Def1 : 435,	Def2 : 380,	Def3 : 200,	Def4 : 665, Speed : 10,	Skill0 : "槍戟鬼神"		, Skill1 : "槍兵の極撃"		, Skill2 : "覇道"		, Skill3 : "千里行"			, Skill4 : "槍将の采配"		},
 	"3102" : {	name : "陸抗"		, Rate : "R",	Cost : 2.0	, Army : "弓",	Atk : 145, Int : 17 ,	Def1 : 325,	Def2 : 450,	Def3 : 250,	Def4 : 175, Speed : 10,	Skill0 : "堅牢知略"		, Skill1 : "弓兵突撃"		, Skill2 : "八卦の陣"		, Skill3 : "兵器強行"			, Skill4 : "攻城の檄文"		},
 	"3103" : {	name : "呉夫人"		, Rate : "R",	Cost : 1.0	, Army : "歩",	Atk : 15 , Int : 8  ,	Def1 : 75 ,	Def2 : 45 ,	Def3 : 45 ,	Def4 : 45 , Speed :  8,	Skill0 : "弓兵増強"		, Skill1 : "城壁補強"		, Skill2 : "神速援護"		, Skill3 : "弓兵増強"			, Skill4 : "攻城の檄文"		},
-	"3104" : {	name : "孫権"		, Rate : "UR",	Cost : 3.5	, Army : "弓",	Atk : 440, Int : 18  ,	Def1 : 460,	Def2 : 700,	Def3 : 400,	Def4 : 210, Speed : 13,	Skill0 : "弓兵の極攻"		, Skill1 : "弓兵の猛撃"		, Skill2 : "弓兵の聖域"		, Skill3 : "弓兵修練"			, Skill4 : "弓兵の猛攻"		},
+	"3104" : {	name : "孫権"		, Rate : "UR",	Cost : 3.5	, Army : "弓",	Atk : 440, Int : 18 ,	Def1 : 460,	Def2 : 700,	Def3 : 400,	Def4 : 210, Speed : 13,	Skill0 : "弓兵の極攻"		, Skill1 : "弓兵の猛撃"		, Skill2 : "弓兵の聖域"		, Skill3 : "弓兵修練"			, Skill4 : "弓兵の猛攻"		},
 	"3105" : {	name : "小喬"		, Rate : "SR",	Cost : 1.0	, Army : "歩",	Atk : 30 , Int : 7  ,	Def1 : 175,	Def2 : 150,	Def3 : 150,	Def4 : 150, Speed :  8,	Skill0 : "小華の舞"		, Skill1 : "弓兵の強撃"		, Skill2 : "強兵の檄文"		, Skill3 : "恵風"			, Skill4 : "豊穣"		},
 	"3106" : {	name : "虎姉妹"		, Rate : "UR",	Cost : 2.5	, Army : "弓",	Atk : 280, Int : 6  ,	Def1 : 230,	Def2 : 350,	Def3 : 200,	Def4 : 105, Speed : 11,	Skill0 : "弓兵の強撃"		, Skill1 : "火神の攻勢"		, Skill2 : "弓兵防御"		, Skill3 : "弓兵強行"			, Skill4 : "弓兵の猛撃"		},
 	"3107" : {	name : "大喬"		, Rate : "SR",	Cost : 1.0	, Army : "歩",	Atk : 25 , Int : 8  ,	Def1 : 145,	Def2 : 125,	Def3 : 125,	Def4 : 125, Speed : 8 ,	Skill0 : "大華の舞"		, Skill1 : "覇王の進撃"		, Skill2 : "攻城の檄文"		, Skill3 : "豊穣"			, Skill4 : "弓将の采配"		},
 	"3108" : {	name : "闞沢"		, Rate : "R" ,	Cost : 1.5	, Army : "歩",	Atk : 115, Int : 13 ,	Def1 : 95 ,	Def2 : 40 ,	Def3 : 40 ,	Def4 : 40 , Speed : 8 ,	Skill0 : "石切技術"		, Skill1 : "石切知識"		, Skill2 : "弓兵強行"		, Skill3 : "兵舎訓練"			, Skill4 : "加工知識"		},
-
 	"3109" : {	name : "凌操"		, Rate : "SR",	Cost : 3.5	, Army : "弓",	Atk : 415, Int : 8 ,	Def1 : 425,	Def2 : 720,	Def3 : 370,	Def4 : 130, Speed : 10,	Skill0 : "弓兵の猛攻"		, Skill1 : "弓兵の強攻"		, Skill2 : "弓兵堅守"		, Skill3 : "伐採技術"			, Skill4 : "弓兵の猛撃"		},
 	"3110" : {	name : "諸葛恪"		, Rate : "UC" ,	Cost : 1.5	, Army : "弓",	Atk : 85 , Int : 12,	Def1 : 100,	Def2 : 80 ,	Def3 : 80 ,	Def4 : 80 , Speed : 9 ,	Skill0 : "加工知識"		, Skill1 : "石切技術"		, Skill2 : "製鉄技術"		, Skill3 : "騎兵強行"			, Skill4 : "加工技術"		},
+
+	"3111" : {	name : "太史慈"		, Rate : "UR" ,	Cost : 4.0	, Army : "弓",	Atk : 500 , Int : 8 ,	Def1 : 540,	Def2 : 825 ,	Def3 : 470 ,	Def4 : 245, Speed : 11, Skill0 : "弓兵の大極撃"		, Skill1 : ""		, Skill2 : ""		, Skill3 : ""			, Skill4 : ""		},
+	"3112" : {	name : "周泰"		, Rate : "SR" ,	Cost : 3.5	, Army : "槍",	Atk : 410 , Int : 6 ,	Def1 : 505,	Def2 : 440 ,	Def3 : 154 ,	Def4 : 860, Speed : 10,	Skill0 : "不撓不屈"		, Skill1 : "守護防陣"		, Skill2 : "強襲突覇"		, Skill3 : "加工技術"			, Skill4 : "護君"		},
+	"3113" : {	name : "虞翻"		, Rate : "SR" ,	Cost : 2.5	, Army : "歩",	Atk : 250 , Int : 18,	Def1 : 280,	Def2 : 145 ,	Def3 : 145 ,	Def4 : 145, Speed : 8 ,	Skill0 : "弩兵移送"		, Skill1 : "強襲突覇"		, Skill2 : "弓兵の聖域"		, Skill3 : "弓兵修練"			, Skill4 : "弓兵の極撃"		},
 
 	"4001" : {	name : "呂布"		, Rate : "SR",	Cost : 4.0	, Army : "騎",	Atk : 500, Int : 3  ,	Def1 : 545,	Def2 : 250,	Def3 : 865,	Def4 : 455, Speed : 15,	Skill0 : "飛将"			, Skill1 : "一騎当千"		, Skill2 : "鉄壁"		, Skill3 : "厩舎修練"			, Skill4 : "覇王の進撃"		},
 	"4002" : {	name : "董卓"		, Rate : "R",	Cost : 3.0	, Army : "騎",	Atk : 325, Int : 6  ,	Def1 : 300,	Def2 : 120,	Def3 : 405,	Def4 : 230, Speed : 14,	Skill0 : "剣兵の進撃"		, Skill1 : "剣兵の進撃"		, Skill2 : "剣兵防御"		, Skill3 : "剣兵行軍"			, Skill4 : "剣兵の強撃"		},
@@ -614,8 +623,10 @@ var COLOR_BACK	= "#FFF2BB";	// 各BOX背景色
 	"4091" : {	name : "呂氏"		, Rate : "SR",	Cost : 3.5	, Army : "弓",	Atk : 410, Int : 4  ,	Def1 : 345,	Def2 : 585,	Def3 : 300,	Def4 : 105, Speed : 12,	Skill0 : "弓神降臨"		, Skill1 : "万夫不当"		, Skill2 : "弓兵方陣"		, Skill3 : "弓兵突覇"			, Skill4 : "弓兵の強攻"		},
 	"4092" : {	name : "馬騰"		, Rate : "R",	Cost : 3.0	, Army : "騎",	Atk : 320, Int : 9  ,	Def1 : 295,	Def2 : 100,	Def3 : 575,	Def4 : 295, Speed : 14,	Skill0 : "騎兵の強攻"		, Skill1 : "騎兵の強撃"		, Skill2 : "騎兵防御"		, Skill3 : "騎兵行軍"			, Skill4 : "騎兵の強攻"		},
 	"4093" : {	name : "陳宮"		, Rate : "UC",	Cost : 2.0	, Army : "歩",	Atk : 230, Int : 13  ,	Def1 : 190,	Def2 : 95,	Def3 : 95,	Def4 : 95 , Speed : 8 ,	Skill0 : "兵器突撃"		, Skill1 : "兵器強行"		, Skill2 : "剣兵堅守"		, Skill3 : "千里行"			, Skill4 : "剣兵の猛撃"		},
+	"4094" : {	name : "鄒氏"		, Rate : "R",	Cost : 1.0	, Army : "歩",	Atk : 15 , Int : 7 ,	Def1 : 75 ,	Def2 : 60 ,	Def3 : 60 ,	Def4 : 60 , Speed : 8 ,	Skill0 : "桃色吐息"		, Skill1 : "一騎当千"		,Skill2 : "仁君"		, Skill3 : "王佐の才"			, Skill4 : "趁火打劫"		},
 
-	"4094" : {	name : "鄒氏"		, Rate : "R",	Cost : 1.0	, Army : "歩",	Atk : 15 , Int : 7 ,	Def1 : 75 ,	Def2 : 60 ,	Def3 : 60 ,	Def4 : 60 , Speed : 8 ,	Skill0 : "桃色吐息"		, Skill1 : "一騎当千"		,Skill2 : "仁君"		, Skill3 : "王佐の才"			, Skill4 : "趁火打劫"		}
+	"4103" : {	name : "于吉"		, Rate : "R",	Cost : 1.5	, Army : "歩",	Atk : 130, Int : 13,	Def1 : 100,	Def2 : 75 ,	Def3 : 75 ,	Def4 : 75 , Speed : 8 ,	Skill0 : "豊潤祈祷"		, Skill1 : "剣兵の極撃"		,Skill2 : "仁君"		, Skill3 : "練兵修練"			, Skill4 : "富国"		},
+	"4104" : {	name : "郭汜"		, Rate : "UC",	Cost : 1.5	, Army : "騎",	Atk : 200, Int : 1 ,	Def1 : 175,	Def2 : 80 ,	Def3 : 265,	Def4 : 150, Speed : 14,	Skill0 : "趁火打劫"		, Skill1 : "豪傑"		, Skill2 : "厩舎訓練"		, Skill3 : "鉄壁"			, Skill4 : "奇計百出"		}
 
 };
 
@@ -1009,8 +1020,9 @@ var scr_list = [
 	// ブショーダス画面・トレード画面での合成時のレシピ表示
 	// =============================================================================================================================================================================
 	if ( ( (location.pathname == "/union/learn.php") && (location.search.match("cid=") != null) ) ||
-           (location.pathname == "/card/trade.php")        || (location.pathname == "/card/trade_bid.php") ||
+                   (location.pathname == "/card/trade.php")        || (location.pathname == "/card/trade_bid.php") ||
 		   (location.pathname == "/card/bid_list.php")     || (location.pathname == "/busyodas/busyodas_result.php") ||
+		   (location.pathname == "/busyodas/busyodas_continuty_result.php") ||
 		   (location.pathname == "/card/exhibit_list.php") || (location.pathname == "/card/trade_card.php") ) {
 
 		// 変数定義 ================================================================================================================================================================
@@ -1067,13 +1079,17 @@ var scr_list = [
 			if (base_skill2s.snapshotLength) {
 				base_skill_2 = base_skill2s.snapshotItem(0).innerHTML.substring(2).split("LV")[0];
 			}
-			console.log(base_skill_1 + " : " + base_skill_2);
+//			console.log(base_skill_1 + " : " + base_skill_2);
 		}
 
 		// カードの枠の変更 ========================================================================================================================================================
 
 		// トレード画面 or ブショーダス
-		if ((location.pathname == "/card/trade.php") || (location.pathname == "/busyodas/busyodas_result.php") ||  (location.pathname == "/card/trade_bid.php") ||  (location.pathname == "/card/bid_list.php") || (location.pathname == "/card/exhibit_list.php")) {
+		if ((location.pathname == "/card/trade.php") || (location.pathname == "/busyodas/busyodas_result.php")
+							     || (location.pathname == "/busyodas/busyodas_continuty_result.php")
+                                                             || (location.pathname == "/card/trade_bid.php")
+                                                             || (location.pathname == "/card/bid_list.php")
+                                                             || (location.pathname == "/card/exhibit_list.php") ) {
 
 			// トレード画面
 			if ( (location.pathname == "/card/trade.php") ||  (location.pathname == "/card/bid_list.php") || (location.pathname == "/card/exhibit_list.php") || (location.pathname == "/card/exhibit_list.php")) {
@@ -1088,9 +1104,20 @@ var scr_list = [
 			}
 			// ブショーダス画面
 			if (location.pathname == "/busyodas/busyodas_result.php") {
-				var card_r        = document.evaluate('//div[@class="result"]/div[1]/div/div', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-				var card_No       = document.evaluate('//div[@class="result"]/div[1]/div[1]/div[1]/span[@class="cardno"]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+				// 2013.01.17 修正
+				var card_r        = document.evaluate('//div[@class="cardWrapper" or @class="cardWrapper2col"]/div/div', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+				var card_No       = document.evaluate('//div[@class="cardWrapper" or @class="cardWrapper2col"]/div/div/span[@class="cardno"]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+				// 2013.01.17 ここまで
 			}
+
+			// ブショーダス画面（10枚まとめて）
+			// 2013.01.17 追加
+			if (location.pathname == "/busyodas/busyodas_continuty_result.php") {
+				var card_r        = document.evaluate('//div[@class="cardWrapper cardWrapper_10" or @class="cardWrapper2col"]/div[1]/div', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+				var card_No       = document.evaluate('//div[@class="cardWrapper cardWrapper_10" or @class="cardWrapper2col"]/div/div/span[@class="cardno"]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+			}
+			// 2013.01.17 ここまで
 
 			// カードの枠の変更 ====================================================================================================================================================
 			GM_addStyle("div.cardStatus_rarerity_ur  { background:url('" + bg_status_ur[1] + "') !important}");	// UR
@@ -1131,6 +1158,30 @@ var scr_list = [
 		}
 
 		// 合成レシピの表示 ========================================================================================================================================================
+		// 破棄自動チェック 2013.01.17 追加
+		if (location.pathname == "/busyodas/busyodas_continuty_result.php") {
+			var card_del = document.evaluate('//form[@id="busyodas"]/table/tbody/tr/td[1]/*', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			for (var i=0;i<card_No.snapshotLength;i++){
+				try {
+					if (i > 0) {
+						if ( checkDestruction ( card_No.snapshotItem(i).innerHTML ) ) {
+							card_del.snapshotItem(i-1).checked = true;
+						}
+					}
+				} catch(e) {
+				}
+			}
+		}
+		if (location.pathname == "/busyodas/busyodas_result.php") {
+			var card_del = document.evaluate('//form[@id="busyodas"]/table[2]/tbody/tr/td[1]/*', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			try {
+				if ( checkDestruction ( card_No.snapshotItem(0).innerHTML ) ) {
+					card_del.snapshotItem(0).checked = true;
+				}
+			} catch(e) {
+			}
+		}
+		// ここまで 2013.01.17
 		for (var i=0;i<card_No.snapshotLength;i++){
 			try {
 				htmldoc2.innerHTML = card_r.snapshotItem(i).innerHTML;		// 裏面
@@ -1172,7 +1223,6 @@ var scr_list = [
 				attack			= parseFloat( document.evaluate('//span[@class="status_att"]',   htmldoc2, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML );
 				defense			= parseFloat( document.evaluate('//span[@class="status_wdef"]',  htmldoc2, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML );
 				intelligence	= parseFloat( document.evaluate('//span[@class="status_int"]',   htmldoc2, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML );
-
 				// 1ポイントあたりのステータス増分計算
 				pointAtk = parseFloat(card_list[card_No.snapshotItem(i).innerHTML].Atk)  * 0.094;		// 攻撃
 				pointDef = parseFloat(card_list[card_No.snapshotItem(i).innerHTML].Def1) * 0.094;		// 防御
@@ -1230,7 +1280,7 @@ var scr_list = [
 				}
 
 				// トレード時の表示
-				if ((location.pathname == "/card/trade.php") || (location.pathname == "/busyodas/busyodas_result.php") ||  (location.pathname == "/card/trade_bid.php") ||  (location.pathname == "/card/bid_list.php") || (location.pathname == "/card/exhibit_list.php")) {
+				if ((location.pathname == "/card/trade.php") || (location.pathname == "/busyodas/busyodas_result.php") || (location.pathname == "/busyodas/busyodas_continuty_result.php") || (location.pathname == "/card/trade_bid.php") ||  (location.pathname == "/card/bid_list.php") || (location.pathname == "/card/exhibit_list.php")) {	// 2013.01.17 追加
 					status  = '<span  class="union_sentence" style="color:#FFFFFF; display:block; font-size:12px; left:13px; line-height:1.4; position:absolute; text-align:left; top:210px; white-space:nowrap; width:108px; ">';
 					for (var x=0;x<4;x++) {
 								status += SkillArray[x].n + "：" + SkillArray[x].skill + '<br />';
@@ -1294,7 +1344,8 @@ var scr_list = [
 	if (location.pathname == "/busyodas/busyodas.php") {
 		addOpenSettingHtml()
 
-        j$("#busyodasTabContent:has(img[src*=hd_lite.jpg]) table").before("<div id=AutoBushodasLite>");
+//        j$("#busyodasTabContent:has(img[src*=hd_lite.jpg]) table").before("<div id=AutoBushodasLite>");
+        j$("#busyodasTabContent:has(div[class='sysMes busyodasCardInfo']) div[class='busyodasHeader clearfix']").before("<div id=AutoBushodasLite>");
         j$("#AutoBushodasLite").append("<div id=AutoBushodasControls>");
         j$("#AutoBushodasLite").append("<div id=CardInfo>");
         j$("#CardInfo").css({
@@ -1337,7 +1388,7 @@ function addOpenSettingHtml() {
 		openSettingBilderBox();
 	}, true);
 
-	//自動ダス設定リンク
+	//自動ダス実行リンク
 	var addStart = d.createElement("input");
 	addStart.id = "OpenSetting";
 	addStart.type = "button";
@@ -1352,9 +1403,9 @@ function addOpenSettingHtml() {
 
 		LoadSettingBox();		// 設定をロード
 
-        var p = parseInt(j$("li[class=first_bpbtn] span").text());
-        j$("div[class=sysMes]").text().match(/残り(\d+)枚/);
-        var q = parseInt(RegExp.$1);
+        	var p = parseInt(j$("li[class=first_bpbtn] span").text());
+        	j$("div[class=sysMes busyodasCardInfo]").text().match(/残り(\d+)枚/);		// 2013.01.17 修正
+        	var q = parseInt(RegExp.$1);
 		DrawResult = ["","","","","","","","","",""];
 		autoDasu(p, q, "0", "0");
 	}, true);
@@ -1367,16 +1418,16 @@ function addOpenSettingHtml() {
 
 function autoDasu(total_bp, zan_maisu, hakiid, oldcardno){
 
-//	alert("start autoDasu 保持BP:" + total_bp + " 残" + zan_maisu + "枚 破棄ID:" + hakiid);
+//	console.log("start autoDasu 保持BP:" + total_bp + " 残" + zan_maisu + "枚 破棄ID:" + hakiid);
 	var maisu;
 	if (total_bp / 100 >= zan_maisu) {
 		maisu = zan_maisu;
 	} else {
-        maisu = parseInt(total_bp / 100)
+	        maisu = parseInt(total_bp / 100)
 	}
 
-    j$("input[name=送信]").attr("onClick").split(",")[2].match(/\'([a-z0-9]+)\'/);
-    var ssid = RegExp.$1;
+	j$("input[name=送信]").attr("onClick").split(",")[2].match(/\'([a-z0-9]+)\'/);
+	var ssid = RegExp.$1;
 
 	// 引ける枚数が０枚で破棄カードがある場合
 	if (maisu == 0) {
@@ -1396,6 +1447,17 @@ function autoDasu(total_bp, zan_maisu, hakiid, oldcardno){
 			c['sz'] = "";
 			c['ssid'] = ssid;			// 2012.10.24 修正
 			c['btn_send'] = "破棄";
+/*
+			c['label['  + hakiid + ']']	= "";
+			c['delete[' + hakiid + ']']	= hakiid;
+			c['ssid']			= ssid;
+			c['send']			= "send";
+			c['tab']			= "normal";
+			c['mode']			= "label";
+			c['continuty']			= "";
+			c['card']			= hakiid;
+			c['got_type']			= 0;
+*/
 			j$.post("http://" + HOST + "/card/allcard_delete.php", c, function () {
 				location.href = "http://" + HOST + "/busyodas/busyodas.php";
 				return;
@@ -1411,60 +1473,65 @@ function autoDasu(total_bp, zan_maisu, hakiid, oldcardno){
 	c['ssid'] = ssid;
 	c['send'] = 'send';
 	c['got_type'] = 0;
-	c['del_card_id'] = hakiid;
+	// 2013.01.17 追加
+	if (hakiid > 0) {
+		c['label['  + hakiid + ']']	= "";
+		c['delete[' + hakiid + ']']	= hakiid;
+		c['card']			= hakiid;
+	}
+	// ここまで
 
-    j$(document.body).append("<div id=AjaxTempDOM>");
-//  j$("#AjaxTempDOM").hide();
-    j$("#AjaxTempDOM").load("http://" + HOST + "/busyodas/busyodas.php #gray02Wrapper", c, function () {
+	j$(document.body).append("<div id=AjaxTempDOM>");
+	j$("#AjaxTempDOM").hide();
+	j$("#AjaxTempDOM").load("http://" + HOST + "/busyodas/busyodas.php #gray02Wrapper", c, function () {
 
-        j$("a[href*=BusyodasRetry]").attr("href").match(/\'(\d+)\'/);
-        var a = RegExp.$1;
-        var cardno			= j$("span[class=cardno]").text();
-        var rate			= j$("span[class*=rarerity]").text();
-        var name			= j$("span[class=name]").text();
-        var cost			= parseFloat(j$("span[class=cost]").text());
-        var intelligence	= parseFloat(j$("span[class=status_int]").text());
-        var h = " が当たりました!";
+		// 2013.01.17 修正
+	        var a = j$("input[class=delete]").attr("value");					// 2013.01.17 修正
+		var cardno		= document.evaluate('//div[@class="cardWrapper"]/div/div/span[@class="cardno"]',document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML;
+		var rate		= document.evaluate('//div[@class="cardWrapper"]/div/div/span',document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML;
+		var name		= document.evaluate('//div[@class="cardWrapper"]/div/div/span[@class="name"]',document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML;
+		var cost		= parseFloat(document.evaluate('//div[@class="cardWrapper"]/div/div/span[@class="cost"]',document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML);
+		var intelligence	= parseFloat(document.evaluate('//div[@class="cardWrapper"]/div/div/span[@class="status_int"]',document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML);
+		// 2013.01.17 ここまで
+	        var h = " が当たりました!";
 
-        var j = 0;				// 破棄カード
-        var l = 0;				// 減少BP
-        var m = 0;				// カード増加枚数
+	        var j = 0;				// 破棄カード
+	        var l = 0;				// 減少BP
+	        var m = 0;				// カード増加枚数
 
 		if (checkDestruction(cardno) == 0) {
-			l = 100;		// 減少BP
-			m = 1;			// カード増加枚数
-			h = " が当たりました!";
+			l = 100;			// 減少BP
+			m = 1;				// カード増加枚数
+			h = " が当たりました！";
 		} else {
-//			alert("a:" + a);
 			j = a;
-			l = 70;			// 減少BP（破棄するために30BPは増える)
-			m = 0;			// カード増加枚数（破棄するから0枚増加)
-			h = " を自動削除しました!";
+			l = 70;				// 減少BP（破棄するために30BPは増える)
+			m = 0;				// カード増加枚数（破棄するから0枚増加)
+			h = " を自動削除しました！";
 
 		}
 
-		h += "  保持BP:" + total_bp + " 残" + zan_maisu + "枚 破棄ID:" + hakiid;
+		h += "</td><td width=300>  保持BP:" + total_bp + " 残" + zan_maisu + "枚 破棄ID:" + hakiid;	// 2013.01.17 修正
 		for (i=9;i>0;i--){
 			DrawResult[i] = DrawResult[i-1];
 		}
-
-        if (rate == "C") {		DrawResult[0] = "<span id=card_rarityC>"  + '<font style="color:#000000; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
-        } else if (rate == "UC") {	DrawResult[0] = "<span id=card_rarityUC>" + '<font style="color:#ffa200; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
-        } else if (rate == "R")  {	DrawResult[0] = "<span id=card_rarityR>"  + '<font style="color:#00c5ff; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
-        } else if (rate == "SR") {	DrawResult[0] = "<span id=card_raritySR>" + '<font style="color:#ff4242; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
-        } else {			DrawResult[0] = "<span id=card_rarity>"   + '<font style="color:#f236fe; font-weight: bold;">' + rate + "</font></span>  " + name + " (No." + cardno + ")<span id=result_msg>" + h + "</span><br>";
-        }
-
+		// 2013.01.17 修正
+	        if (rate == "C") {		DrawResult[0] = "<center><table><tr><td width=30><span id=card_rarityC>"  + '<font style="color:#000000; font-weight: bold;">' + rate + "</font></span></td><td width=140>" + name + " (No." + cardno + ")</td><td width=180><span id=result_msg>" + h + "</span></td></tr></table></center>";
+	        } else if (rate == "UC") {	DrawResult[0] = "<center><table><tr><td width=30><span id=card_rarityUC>" + '<font style="color:#ffa200; font-weight: bold;">' + rate + "</font></span></td><td width=140>" + name + " (No." + cardno + ")</td><td width=180><span id=result_msg>" + h + "</span></td></tr></table></center>";
+	        } else if (rate == "R")  {	DrawResult[0] = "<center><table><tr><td width=30><span id=card_rarityR>"  + '<font style="color:#00c5ff; font-weight: bold;">' + rate + "</font></span></td><td width=140>" + name + " (No." + cardno + ")</td><td width=180><span id=result_msg>" + h + "</span></td></tr></table></center>";
+	        } else if (rate == "SR") {	DrawResult[0] = "<center><table><tr><td width=30><span id=card_raritySR>" + '<font style="color:#ff4242; font-weight: bold;">' + rate + "</font></span></td><td width=140>" + name + " (No." + cardno + ")</td><td width=180><span id=result_msg>" + h + "</span></td></tr></table></center>";
+	        } else {			DrawResult[0] = "<center><table><tr><td width=30><span id=card_rarity>"   + '<font style="color:#f236fe; font-weight: bold;">' + rate + "</font></span></td><td width=140>" + name + " (No." + cardno + ")</td><td width=180><span id=result_msg>" + h + "</span></td></tr></table></center>";
+	        }
+		// ここまで
 		var ViewDrawResult = "";
 		for (i=0;i<10;i++){
 			ViewDrawResult += DrawResult[i];
 		}
 
-        j$("#CardInfo").html(ViewDrawResult);
-
-        setTimeout(function () {
-            autoDasu(total_bp - l, zan_maisu - m, j, cardno)
-        }, 1500)
+	        j$("#CardInfo").html(ViewDrawResult);
+	        setTimeout(function () {
+			autoDasu(total_bp - l, zan_maisu - m, j, cardno)
+		}, 1000)
 
 	});
 }
