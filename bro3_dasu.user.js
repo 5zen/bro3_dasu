@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name		bro3_dasu
 // @namespace		ブラウザ三国志 カード表示拡張と自動ブショーダス
-// @version		2013.01.17
+// @version		2013.01.18
 // @include		http://*.3gokushi.jp/*
 // @include		https://*.3gokushi.jp/*
 // @include		http://*.nexon.com/*
@@ -12,6 +12,8 @@
 // @include             http://*.3gokushi.jp/busyodas/busyodas_continuty_result.php
 // @include		http://*.3gokushi.jp/busyodas/b3kuji.php*
 // @include		http://*.3gokushi.jp/alliance/alliance_log.php*
+// @include		http://*.3gokushi.jp/card/allcard_delete.php*
+// @include		http://*.3gokushi.jp/union/expup.php*
 // @icon		https://raw.github.com/5zen/bro3_dasu/master/icon.png
 // @description		ブラウザ三国志 カード表示拡張と自動ブショーダス
 // @require		http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js
@@ -107,12 +109,18 @@
 //			自動ダス時の表示の修正
 //			№1115,1116,3111,3112,3113,4103,4104 追加
 //			№3111 は情報不足デス
+// 2013.01.18		カード一括破棄時の自動チェック機能追加
+//			破棄しないカードにブショーダスライトから出ないカードを追加
+//			修行合成時に裏面スキルと合成情報を表示
+//			合成時に合計スコアが極端に多い場合に合成レシピが表示されなかったのを修正
+//			合成レシピ表示で隠しスキルは一番したに表示されるよう修正
+//			№3111 の合成レシピ追加
 
 jQuery.noConflict();
 j$ = jQuery;
 
 var PGNAME = "_Auto_Busho_Das_5zen_v2012.05.27";	//グリモン領域への保存時のPGの名前
-var VERSION = "2013.01.17";				// バージョン情報
+var VERSION = "2013.01.18";				// バージョン情報
 var HOST = location.hostname;				//アクセスURLホスト
 var OPT_SEASON = "DF";					// 標準は変更しない
 
@@ -531,7 +539,7 @@ var COLOR_BACK	= "#FFF2BB";	// 各BOX背景色
 	"3109" : {	name : "凌操"		, Rate : "SR",	Cost : 3.5	, Army : "弓",	Atk : 415, Int : 8 ,	Def1 : 425,	Def2 : 720,	Def3 : 370,	Def4 : 130, Speed : 10,	Skill0 : "弓兵の猛攻"		, Skill1 : "弓兵の強攻"		, Skill2 : "弓兵堅守"		, Skill3 : "伐採技術"			, Skill4 : "弓兵の猛撃"		},
 	"3110" : {	name : "諸葛恪"		, Rate : "UC" ,	Cost : 1.5	, Army : "弓",	Atk : 85 , Int : 12,	Def1 : 100,	Def2 : 80 ,	Def3 : 80 ,	Def4 : 80 , Speed : 9 ,	Skill0 : "加工知識"		, Skill1 : "石切技術"		, Skill2 : "製鉄技術"		, Skill3 : "騎兵強行"			, Skill4 : "加工技術"		},
 
-	"3111" : {	name : "太史慈"		, Rate : "UR" ,	Cost : 4.0	, Army : "弓",	Atk : 500 , Int : 8 ,	Def1 : 540,	Def2 : 825 ,	Def3 : 470 ,	Def4 : 245, Speed : 11, Skill0 : "弓兵の大極撃"		, Skill1 : ""		, Skill2 : ""		, Skill3 : ""			, Skill4 : ""		},
+	"3111" : {	name : "太史慈"		, Rate : "UR" ,	Cost : 4.0	, Army : "弓",	Atk : 500 , Int : 8 ,	Def1 : 540,	Def2 : 825 ,	Def3 : 470 ,	Def4 : 245, Speed : 11, Skill0 : "弓兵の大極撃"		, Skill1 : "弓兵の極撃"		, Skill2 : "守護神"		, Skill3 : "弓将の采配"			, Skill4 : "天弓雨撃"		},
 	"3112" : {	name : "周泰"		, Rate : "SR" ,	Cost : 3.5	, Army : "槍",	Atk : 410 , Int : 6 ,	Def1 : 505,	Def2 : 440 ,	Def3 : 154 ,	Def4 : 860, Speed : 10,	Skill0 : "不撓不屈"		, Skill1 : "守護防陣"		, Skill2 : "強襲突覇"		, Skill3 : "加工技術"			, Skill4 : "護君"		},
 	"3113" : {	name : "虞翻"		, Rate : "SR" ,	Cost : 2.5	, Army : "歩",	Atk : 250 , Int : 18,	Def1 : 280,	Def2 : 145 ,	Def3 : 145 ,	Def4 : 145, Speed : 8 ,	Skill0 : "弩兵移送"		, Skill1 : "強襲突覇"		, Skill2 : "弓兵の聖域"		, Skill3 : "弓兵修練"			, Skill4 : "弓兵の極撃"		},
 
@@ -676,7 +684,7 @@ var scr_list = [
 	[	4020025 ,  9.09		],	[	4060225 ,  9.09		],	[	4100625 ,  9.09		],	[	4141225 ,  9.09		],	[	4182025 ,  9.09		],	[	4223025 ,  9.09		],	[	4264225 ,  9.09		],	[	4305625 ,  9.09		],
 	[	4347225 ,  9.09		],	[	4389025 ,  9.09		],	[	4431025 ,  9.09		],	[	4473225 ,  9.09		],	[	4515625 ,  9.09		],	[	4558225 ,  9.09		],	[	4601025 ,  9.09		],	[	4644025 ,  9.09		],
 	[	4687225 ,  9.09		],	[	4730625 ,  9.09		],	[	4774225 ,  9.09		],	[	4818025 ,  9.09		],	[	4862025 ,  9.09		],	[	4906225 ,  9.09		],	[	4950625 ,  9.09		],	[	4995225 ,  9.09		],
-	[	5040025 ,  9.09		],	[	9999999 ,  0.00		]
+	[	5040025 ,  9.09		],	[     999999999 ,  0.00		]
 ];
 
 ( function() {
@@ -731,7 +739,6 @@ var scr_list = [
 
 	// Lvup処理のためのCardIDとCardNoを呼び出し
 	var LvupCardList = cloadData("LvupCardidList", "[]", true, true);
-//	console.log(LvupCardList);
 	// Lvup時のポイント振り分け画面
 	if (location.pathname == "/card/status_info.php") {
 		// CardID の抽出
@@ -1022,7 +1029,9 @@ var scr_list = [
 	if ( ( (location.pathname == "/union/learn.php") && (location.search.match("cid=") != null) ) ||
                    (location.pathname == "/card/trade.php")        || (location.pathname == "/card/trade_bid.php") ||
 		   (location.pathname == "/card/bid_list.php")     || (location.pathname == "/busyodas/busyodas_result.php") ||
-		   (location.pathname == "/busyodas/busyodas_continuty_result.php") ||
+		   (location.pathname == "/card/allcard_delete.php") ||				// 2013.01.18 追加
+		   (location.pathname == "/busyodas/busyodas_continuty_result.php")	||		// 2013.01.17 追加
+		   (location.pathname == "/union/expup.php")				||		// 2013.01.18 追加
 		   (location.pathname == "/card/exhibit_list.php") || (location.pathname == "/card/trade_card.php") ) {
 
 		// 変数定義 ================================================================================================================================================================
@@ -1056,7 +1065,7 @@ var scr_list = [
 
 		if ( (location.pathname == "/union/learn.php") && (location.search.match("cid=") != null) ) {
 			// ベースカード情報の取得 ==================================================================================================================================================
-			var base_background = document.evaluate('//div[@class="cardWrapper"]/div/div', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			var base_background	= document.evaluate('//div[@class="cardWrapper"]/div/div', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 			var base_lv		= parseFloat( document.evaluate('//div[@class="right"]//span[4]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML );
 			var base_score		= parseFloat( document.evaluate('//span[@class="score"]',   document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML );
 			var base_rate		= document.evaluate('//div[@class="cardWrapper"]//span[1]',   document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML;
@@ -1079,17 +1088,17 @@ var scr_list = [
 			if (base_skill2s.snapshotLength) {
 				base_skill_2 = base_skill2s.snapshotItem(0).innerHTML.substring(2).split("LV")[0];
 			}
-//			console.log(base_skill_1 + " : " + base_skill_2);
 		}
 
 		// カードの枠の変更 ========================================================================================================================================================
 
 		// トレード画面 or ブショーダス
 		if ((location.pathname == "/card/trade.php") || (location.pathname == "/busyodas/busyodas_result.php")
-							     || (location.pathname == "/busyodas/busyodas_continuty_result.php")
+							     || (location.pathname == "/busyodas/busyodas_continuty_result.php")	// 2013.01.17 追加
                                                              || (location.pathname == "/card/trade_bid.php")
                                                              || (location.pathname == "/card/bid_list.php")
-                                                             || (location.pathname == "/card/exhibit_list.php") ) {
+                                                             || (location.pathname == "/card/allcard_delete.php")			// 2013.01.18 追加
+                                                             || (location.pathname == "/card/exhibit_list.php") ){
 
 			// トレード画面
 			if ( (location.pathname == "/card/trade.php") ||  (location.pathname == "/card/bid_list.php") || (location.pathname == "/card/exhibit_list.php") || (location.pathname == "/card/exhibit_list.php")) {
@@ -1119,6 +1128,14 @@ var scr_list = [
 			}
 			// 2013.01.17 ここまで
 
+			// カード一括破棄画面
+			// 2013.01.18 追加
+			if (location.pathname == "/card/allcard_delete.php") {
+				var card_r        = document.evaluate('//div[@class="cardWrapper2col"]/div[1]/div', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+				var card_No       = document.evaluate('//div[@class="cardWrapper2col"]/div/div/span[@class="cardno"]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			}
+			// 2013.01.18 ここまで
+
 			// カードの枠の変更 ====================================================================================================================================================
 			GM_addStyle("div.cardStatus_rarerity_ur  { background:url('" + bg_status_ur[1] + "') !important}");	// UR
 			GM_addStyle("div.cardStatus_rarerity_sr  { background:url('" + bg_status[1]    + "') !important}");	// SR
@@ -1140,13 +1157,34 @@ var scr_list = [
 
 		}
 
-		// 合成時のカード枠の変更 ==================================================================================================================================================
+		// 修行時のカード枠の変更 ====================================================================================================================================================
+		if ( (location.pathname == "/union/expup.php") && (location.search.match("cid=") != null) ) {
+			var card_r        = document.evaluate('//div[@class="cardColmn"]/div/div[1]/div/div', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			var card_r2       = document.evaluate('//div[@class="cardColmn"]/div/div[2]/div', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			var card_No       = document.evaluate('//div[@class="cardColmn"]/div/div[1]/div/div/span[@class="cardno"]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+			var base_lv		= parseFloat( document.evaluate('//div[@class="cardColmn"]/div/div/div/span[4]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML );
+			var base_score		= parseFloat( document.evaluate('//span[@class="score"]',   document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML );
+			var card_skill    = document.evaluate('//div[@class="cardColmn"]/div/div[2]/div', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+			// カードの枠の変更 ==================================================================================================================================================
+			for (var i=0;i<card_background.snapshotLength;i++) {
+				if (card_Rate.snapshotItem(i).innerHTML == "UR") {
+					card_background.snapshotItem(i).style.background = "url('" +  bg_status_ur[3] + "')";
+				} else {
+					card_background.snapshotItem(i).style.background = "url('" +  bg_status[3] + "')";
+				}
+			}
+			if (SukesukeFlg == 1) {	GM_addStyle('span.union_bg   { opacity : 0.3 }'); }
+		}
+
+		// 合成時のカード枠の変更 ====================================================================================================================================================
 		if ( (location.pathname == "/union/learn.php") && (location.search.match("cid=") != null) ) {
 			var card_r        = document.evaluate('//div[@class="cardColmn"]/div/div[1]/div/div', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 			var card_r2       = document.evaluate('//div[@class="cardColmn"]/div/div[2]/div', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 			var card_No       = document.evaluate('//div[@class="cardColmn"]/div/div[1]/div/div/span[@class="cardno"]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 
-			// カードの枠の変更 ====================================================================================================================================================
+			// カードの枠の変更 ==================================================================================================================================================
 			for (var i=0;i<card_background.snapshotLength;i++) {
 				if (card_Rate.snapshotItem(i).innerHTML == "UR") {
 					card_background.snapshotItem(i).style.background = "url('" +  bg_status_ur[2] + "')";
@@ -1157,7 +1195,7 @@ var scr_list = [
 			if (SukesukeFlg == 1) {	GM_addStyle('span.union_bg   { opacity : 0.3 }'); }
 		}
 
-		// 合成レシピの表示 ========================================================================================================================================================
+		// 合成レシピの表示 ==========================================================================================================================================================
 		// 破棄自動チェック 2013.01.17 追加
 		if (location.pathname == "/busyodas/busyodas_continuty_result.php") {
 			var card_del = document.evaluate('//form[@id="busyodas"]/table/tbody/tr/td[1]/*', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
@@ -1182,22 +1220,42 @@ var scr_list = [
 			}
 		}
 		// ここまで 2013.01.17
+
+		// 2011.01.18 追加
+		// カード一括破棄時の自動チェック（経験値・スコアともに０の保持対象外カードのみ）
+		if (location.pathname == "/card/allcard_delete.php") {
+			// 経験値・スコア取得
+			var card_Exp	= document.evaluate('//div[@class="cardWrapper2col"]/div/div/span[@class="ex"]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			var card_Scr	= document.evaluate('//div[@class="cardWrapper2col"]/div[2]/span[@class="score"]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			var card_del	= document.evaluate('//div[@id="allcard_delete"]/form/table/tbody/tr/td[1]/*', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			for (var i=0;i<card_No.snapshotLength;i++){
+				try {
+					// 経験値・スコアともに０で保持対象外のカードにチェックを入れる
+					if ((card_Scr.snapshotItem(i).innerHTML == 0) && (card_Exp.snapshotItem(i).innerHTML.match(/\d+/)[0] == 0)) {
+						if ( checkDestruction ( card_No.snapshotItem(i).innerHTML ) ) {
+							card_del.snapshotItem(i).checked = true;
+						}
+					}
+				} catch(e) {
+				}
+			}
+		}
+		// 2013.01.18 ここまで
 		for (var i=0;i<card_No.snapshotLength;i++){
 			try {
 				htmldoc2.innerHTML = card_r.snapshotItem(i).innerHTML;		// 裏面
-
-				if ( (location.pathname == "/union/learn.php") && (location.search.match("cid=") != null) ) {
+				if ( (location.pathname == "/union/learn.php") && (location.search.match("cid=") != null) ){
 					htmldoc1.innerHTML = card_r2.snapshotItem(i).innerHTML;		// 表面
 					// LV・スコアの取得
 					lv				= parseFloat( document.evaluate('//span[4]',   htmldoc2, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML );
 					score			= parseFloat( document.evaluate('//span[@class="score"]',     htmldoc1, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML );
+
 					// 合計LV・スコアの計算
 					var total_lv	= base_lv + lv;
 					var total_score	= base_score + score;
 
 					var score_table	= 0;
 					var lv_table	= 0;
-
 					for (var x=0;x<scr_list.length;x++) {
 						if (scr_list[x][0] > total_score) {
 							break;
@@ -1212,12 +1270,11 @@ var scr_list = [
 						}
 					}
 					lv_table = x;
-
 					var probability = [ 0.00, 0.00, 0.00 ,0.00 ];
 					probability[0] = (parseFloat( (1 - parseFloat(scr_list[score_table][1] / 100)) * parseFloat( lv_list[lv_table][1] / 100)) * 100).toFixed(2);	// 大
-					probability[1] = (parseFloat( (1 - parseFloat(scr_list[score_table][1] / 100)) * parseFloat( lv_list[lv_table][2] / 100)) * 100).toFixed(2);	// 大
-					probability[2] = (parseFloat( (1 - parseFloat(scr_list[score_table][1] / 100)) * parseFloat( lv_list[lv_table][3] / 100)) * 100).toFixed(2);	// 大
-					probability[3] = (parseFloat( (1 - parseFloat(scr_list[score_table][1] / 100)) * parseFloat( lv_list[lv_table][4] / 100)) * 100).toFixed(2);	// 大
+					probability[1] = (parseFloat( (1 - parseFloat(scr_list[score_table][1] / 100)) * parseFloat( lv_list[lv_table][2] / 100)) * 100).toFixed(2);	// 中
+					probability[2] = (parseFloat( (1 - parseFloat(scr_list[score_table][1] / 100)) * parseFloat( lv_list[lv_table][3] / 100)) * 100).toFixed(2);	// 小
+					probability[3] = (parseFloat( (1 - parseFloat(scr_list[score_table][1] / 100)) * parseFloat( lv_list[lv_table][4] / 100)) * 100).toFixed(2);	// 隠
 				}
 				// 現在の能力値
 				attack			= parseFloat( document.evaluate('//span[@class="status_att"]',   htmldoc2, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).innerHTML );
@@ -1257,7 +1314,7 @@ var scr_list = [
 					status  = '<span class="union_sentence" style="color:#FFFFFF; display:block; font-size:10.5px; left:13px; line-height:1.6; position:absolute; text-align:left; top:154px; white-space:nowrap; width:110px; ">';
 					status += '<table>';
 					// 合成確率を代入
-					for (var x=0;x<4;x++) {
+					for (var x=0;x<3;x++) {
 						SkillArray[x].probability = parseFloat(probability[x]);
 					}
 					// 合成確率でソート
@@ -1268,6 +1325,8 @@ var scr_list = [
 							return 0;
 						}
 					);
+					// 隠しの合成確率は最後に代入 2013.01.18 追加
+					SkillArray[3].probability = parseFloat(probability[3]);
 
 					for (var x=0;x<4;x++) {
 						// 合成元カードに存在するスキルは表示しない
@@ -1280,7 +1339,13 @@ var scr_list = [
 				}
 
 				// トレード時の表示
-				if ((location.pathname == "/card/trade.php") || (location.pathname == "/busyodas/busyodas_result.php") || (location.pathname == "/busyodas/busyodas_continuty_result.php") || (location.pathname == "/card/trade_bid.php") ||  (location.pathname == "/card/bid_list.php") || (location.pathname == "/card/exhibit_list.php")) {	// 2013.01.17 追加
+				if ((location.pathname == "/card/trade.php") || (location.pathname == "/busyodas/busyodas_result.php") ||
+				    (location.pathname == "/busyodas/busyodas_continuty_result.php")	||	// 2013.01.17 追加
+				    (location.pathname == "/card/trade_bid.php")			||
+				    (location.pathname == "/card/bid_list.php")				||
+				    (location.pathname == "/card/exhibit_list.php")			||
+				    (location.pathname == "/card/allcard_delete.php"))				// 2013.01.18 追加
+					{
 					status  = '<span  class="union_sentence" style="color:#FFFFFF; display:block; font-size:12px; left:13px; line-height:1.4; position:absolute; text-align:left; top:210px; white-space:nowrap; width:108px; ">';
 					for (var x=0;x<4;x++) {
 								status += SkillArray[x].n + "：" + SkillArray[x].skill + '<br />';
@@ -1288,7 +1353,8 @@ var scr_list = [
 				}
 
 				// トレード出品時の表示
-				if (location.pathname == "/card/trade_card.php") {
+				if ( (location.pathname == "/card/trade_card.php")	||
+				     (location.pathname == "/union/expup.php") ) {		// 2013.01.18 追加
 					status  = '<span  class="union_sentence" style="color:#FFFFFF; display:block; font-size:12px; left:13px; line-height:1.4; position:absolute; text-align:left; top:124px; white-space:nowrap; width:108px; ">';
 					for (var x=0;x<4;x++) {
 								status += SkillArray[x].n + "：" + SkillArray[x].skill + '<br />';
@@ -1314,7 +1380,6 @@ var scr_list = [
 
 				card_r.snapshotItem(i).innerHTML += status + '</span />';;
 			} catch(e) {
-
 				// 合成・出品時の表示
 				if ( (location.pathname == "/union/learn.php") && (location.search.match("cid=") != null) || (location.pathname == "/card/trade_card.php")) {
 					status  = '<span  class="union_sentence" style="color:#FFFFFF; display:block; font-size:12px; left:13px; line-height:1.4; position:absolute; text-align:left; top:154px; white-space:nowrap; width:108px; ">';
@@ -1418,7 +1483,6 @@ function addOpenSettingHtml() {
 
 function autoDasu(total_bp, zan_maisu, hakiid, oldcardno){
 
-//	console.log("start autoDasu 保持BP:" + total_bp + " 残" + zan_maisu + "枚 破棄ID:" + hakiid);
 	var maisu;
 	if (total_bp / 100 >= zan_maisu) {
 		maisu = zan_maisu;
@@ -2103,6 +2167,7 @@ function checkDestruction(cardno) {
 	// メモ
 	// シルバー以上：UC簡雍(1027) UC曹洪(2045) UC伊籍(1023) UC?沢(3021) UC諸葛瑾(3014)
 
+
     try {
 		// 特定番号の除外
 		for (i=0;i<30;i++) {
@@ -2115,11 +2180,44 @@ function checkDestruction(cardno) {
 			return 0;
 		}
 
+		// 2013.01.18 追加
+		if (
+			( cardno == 1007 ) || // UC劉備
+			( cardno == 1009 ) || // UC諸葛亮
+			( cardno == 1014 ) || // UC徐庶
+			( cardno == 3008 ) || // UC孫権
 
-		// UC劉備(1007) UC諸葛亮(1009) UC徐庶(1014) UC孫権(3008) UC朱桓(3092) 水鏡(4079/4080/4081/4082) は破棄しない
-		if (cardno == 1007 || cardno == 1009 || cardno == 1014 || cardno == 3008 || cardno == 3092 || cardno == 4079 || cardno == 4080 || cardno == 4081 || cardno == 4082) {
+			( cardno == 4079 ) || // 水鏡
+			( cardno == 4080 ) || // 水鏡
+			( cardno == 4081 ) || // 水鏡
+			( cardno == 4082 ) || // UC水鏡
+
+			( cardno == 1010 ) || // UC関羽
+			( cardno == 1023 ) || // UC伊籍
+			( cardno == 1027 ) || // UC簡雍
+			( cardno == 1090 ) || // UC関羽
+			( cardno == 1091 ) || // UC張飛
+			( cardno == 1101 ) || // UC関羽
+			( cardno == 2009 ) || // UC夏侯惇
+			( cardno == 2041 ) || // UC賈詡
+			( cardno == 2045 ) || // UC曹洪
+			( cardno == 2091 ) || // UC夏侯惇
+			( cardno == 2097 ) || // UC夏侯惇
+			( cardno == 2098 ) || // UC許楮
+			( cardno == 2123 ) || // UC張遼
+			( cardno == 3009 ) || // UC周瑜
+			( cardno == 3014 ) || // UC諸葛瑾
+			( cardno == 3021 ) || // UC闞沢
+			( cardno == 3079 ) || // UC周瑜
+			( cardno == 3080 ) || // UC甘寧
+			( cardno == 3084 ) || // UC太史慈
+			( cardno == 4090 ) || // UC張角
+			( cardno == 4098 ) || // UC水鏡娘
+			( cardno == 4102 )    // UC水鏡娘
+		) {
 			return 0;
 		}
+		// 2013.01.18 ここまで
 
 //		//　hasekunオーダー武将　ac.1
 //		if (cardno == 2026 || cardno == 3017 || cardno == 2056 || cardno == 2037 || cardno == 4018 || cardno == 2045 || cardno == 3018 || cardno == 2046 || cardno == 2031 || cardno == 4019 || cardno == 2038 || cardno == 4022 || cardno == 4023 || cardno == 2032 || cardno == 2017 || cardno == 2018 || cardno == 1033 || cardno == 1034) {//ac/1
